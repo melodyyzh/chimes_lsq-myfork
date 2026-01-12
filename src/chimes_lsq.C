@@ -747,10 +747,17 @@ static int process_frame(	A_MAT &A_MATRIX,
 			cout << "...Populating the matrices for A, Coulomb forces, and overbonding..." << endl << endl;
 	 }
 	
-		
+	 bool DUMMY_FIT_FORCE   = CONTROLS.FIT_FORCE;	
 	 bool DUMMY_FIT_STRESS	     = CONTROLS.FIT_STRESS;    
 	 bool DUMMY_FIT_STRESS_ALL    = CONTROLS.FIT_STRESS_ALL;
 	 bool DUMMY_FIT_ENER	         = CONTROLS.FIT_ENER;	 
+
+	 // Only include stress tensor data for first NFORCE frames..
+	
+	 if((CONTROLS.NFORCE != -1) && (i >= CONTROLS.NFORCE))
+	 {
+			CONTROLS.FIT_FORCE     = false;	
+	 }
 
 	 // Only include stress tensor data for first NSTRESS frames..
 	
@@ -800,6 +807,7 @@ static int process_frame(	A_MAT &A_MATRIX,
 	 if (CONTROLS.IF_SUBTRACT_COUL) 
 			SubtractEwaldForces(SYSTEM, NEIGHBOR_LIST, CONTROLS);
 	
+	 CONTROLS.FIT_FORCE 	    = DUMMY_FIT_FORCE;	
 	 CONTROLS.FIT_STRESS        = DUMMY_FIT_STRESS; 
 	 CONTROLS.FIT_STRESS_ALL    = DUMMY_FIT_STRESS_ALL;
 	 CONTROLS.FIT_ENER          = DUMMY_FIT_ENER;	

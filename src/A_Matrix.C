@@ -92,9 +92,12 @@ void A_MAT::INITIALIZE_NATOMS  (int ATOMS, vector<string> & FRAME_ATOMTYPES, vec
 }
 
 
-void A_MAT::INITIALIZE_FORCES(int ATOMS, int NPARAM)
+void A_MAT::INITIALIZE_FORCES(int ATOMS, int NPARAM, bool FIT_FORCE)
 {
-	FORCES.resize(ATOMS);
+	if (FIT_FORCE)
+	{
+		FORCES.resize(ATOMS);
+	}
 	
 	for (int i=0; i<ATOMS; i++)
 	{

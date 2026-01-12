@@ -198,6 +198,7 @@ void INPUT::PARSE_INFILE_LSQ(  JOB_CONTROL	 & CONTROLS,
 	PARSE_CONTROLS_NFRAMES(CONTROLS);
 	PARSE_CONTROLS_NLAYERS(CONTROLS);
 	PARSE_CONTROLS_FITCOUL(CONTROLS);
+	PARSE_CONTROLS_FITFORCE(CONTROLS);
 	PARSE_CONTROLS_FITSTRS(CONTROLS);
 	PARSE_CONTROLS_FITENER(CONTROLS);
 	PARSE_CONTROLS_PAIRTYP(CONTROLS);
@@ -531,6 +532,43 @@ void INPUT::PARSE_CONTROLS_FITCOUL(JOB_CONTROL & CONTROLS)
 			
 			break;
 		}
+	}
+}
+void INPUT::PARSE_CONTROLS_FITFORCE(JOB_CONTROL & CONTROLS)
+{
+	int N_CONTENTS = CONTENTS.size();
+	
+	for (int i=0; i<N_CONTENTS; i++)
+	{
+		if (found_input_keyword("FITFORCE", CONTENTS(i)))
+		{
+			if (CONTENTS(i+1,0)=="first"  || CONTENTS(i+1,0)=="First"  || CONTENTS(i+1,0)=="FIRST")
+			{
+				CONTROLS.FIT_FORCE = true;
+				CONTROLS.NFORCE    = convert_int(CONTENTS(i+1,1),i+1);
+			}			
+			else if (CONTENTS(i+1,0)=="all"  || CONTENTS(i+1,0)=="All"  || CONTENTS(i+1,0)=="ALL"  || CONTENTS(i+1,0) == "A" || CONTENTS(i+1,0) == "a")
+			{
+					CONTROLS.FIT_FORCE_ALL = true;
+			}
+			else
+				CONTROLS.FIT_FORCE = convert_bool(CONTENTS(i+1,0),i+1);
+
+			if ( RANK == 0 ) 
+			{
+				cout << "	# FITFORCE #: ";		
+							
+				if (CONTROLS.FIT_FORCE_ALL)
+					cout << bool2str(CONTROLS.FIT_FORCE_ALL) << " ...will fit to all tensor components" << endl;	
+				else if(CONTROLS.NFORCE>0)
+					cout << bool2str(CONTROLS.FIT_FORCE) << " ...will only fit tensors for first " << CONTROLS.NFORCE << " frames." << endl;
+				else 
+					cout << bool2str(CONTROLS.FIT_FORCE) << endl;
+			}
+			
+			break;
+		}
+		
 	}
 }
 void INPUT::PARSE_CONTROLS_FITSTRS(JOB_CONTROL & CONTROLS)
